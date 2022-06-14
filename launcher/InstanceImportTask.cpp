@@ -401,12 +401,6 @@ void InstanceImportTask::processFlame()
             if (!result.resolved || result.url.isEmpty()) {
                 text += QString("%1: <a href='%2'>%2</a><br/>").arg(result.fileName, result.websiteUrl);
                 // anyBlocked = true;
-
-                // hack here
-                result.url = QString("https://media.forgecdn.net/files/%1/%2/%3")
-                    .arg(QString::number(QString::number(result.fileId).leftRef(4).toInt())
-                            ,QString::number(QString::number(result.fileId).rightRef(3).toInt())
-                            ,result.fileName);
             }
         }
         if(anyBlocked) {
@@ -498,6 +492,14 @@ void InstanceImportTask::processFlame()
                         if (!result.url.isEmpty()) {
                             qDebug() << "Will download" << result.url << "to" << path;
                             auto dl = Net::Download::makeFile(result.url, path);
+                            m_filesNetJob->addNetAction(dl);
+                        } else {
+                            auto url=QString("https://media.forgecdn.net/files/%1/%2/%3")
+                    .arg(QString::number(QString::number(result.fileId).leftRef(4).toInt())
+                            ,QString::number(QString::number(result.fileId).rightRef(3).toInt())
+                            ,result.fileName);
+                            qDebug() << "Will download" << url << "to" << path;
+                            auto dl = Net::Download::makeFile(url, path);
                             m_filesNetJob->addNetAction(dl);
                         }
                         break;
