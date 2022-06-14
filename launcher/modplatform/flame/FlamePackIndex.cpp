@@ -68,6 +68,7 @@ void Flame::loadIndexedPackVersions(Flame::IndexedPack& pack, QJsonArray& arr)
         file.downloadUrl = Json::ensureString(version, "downloadUrl");
 
         // test
+        // here only changes
         if(file.downloadUrl.isEmpty()){
             //FIXME : HACK, MAY NOT WORK FOR LONG
             file.downloadUrl = QString("https://media.forgecdn.net/files/%1/%2/%3")

@@ -394,15 +394,15 @@ void InstanceImportTask::processFlame()
     connect(m_modIdResolver.get(), &Flame::FileResolvingTask::succeeded, [&]()
     {
         auto results = m_modIdResolver->getResults();
-        //first check for blocked mods
-        QString text;
-        auto anyBlocked = false;
-        for(const auto& result: results.files.values()) {
-            if (!result.resolved || result.url.isEmpty()) {
-                text += QString("%1: <a href='%2'>%2</a><br/>").arg(result.fileName, result.websiteUrl);
-                anyBlocked = true;
-            }
-        }
+        // //first check for blocked mods
+        // QString text;
+        // auto anyBlocked = false;
+        // for(const auto& result: results.files.values()) {
+        //     if (!result.resolved || result.url.isEmpty()) {
+        //         text += QString("%1: <a href='%2'>%2</a><br/>").arg(result.fileName, result.websiteUrl);
+        //         anyBlocked = true;
+        //     }
+        // }
         if(anyBlocked) {
             qWarning() << "Blocked mods found, displaying mod list";
 
