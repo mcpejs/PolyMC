@@ -397,12 +397,16 @@ void InstanceImportTask::processFlame()
         //first check for blocked mods
         QString text;
         auto anyBlocked = false;
-        // for(const auto& result: results.files.values()) {
-        //     if (!result.resolved || result.url.isEmpty()) {
-        //         text += QString("%1: <a href='%2'>%2</a><br/>").arg(result.fileName, result.websiteUrl);
-        //         anyBlocked = true;
-        //     }
-        // }
+        for(const auto& result: results.files.values()) {
+            if (!result.resolved || result.url.isEmpty()) {
+                text += QString("%1: <a href='%2'>%2</a><br/>").arg(result.fileName, result.websiteUrl);
+                // anyBlocked = true;
+                file.url = QString("https://media.forgecdn.net/files/%1/%2/%3")
+                    .arg(QString::number(QString::number(file.fileId).leftRef(4).toInt())
+                            ,QString::number(QString::number(file.fileId).rightRef(3).toInt())
+                            ,QUrl::toPercentEncoding(file.fileName));
+            }
+        }
         if(anyBlocked) {
             qWarning() << "Blocked mods found, displaying mod list";
 
