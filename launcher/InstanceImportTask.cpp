@@ -399,6 +399,7 @@ void InstanceImportTask::processFlame()
         auto anyBlocked = false;
         for(const auto& result: results.files.values()) {
             if (!result.resolved || result.url.isEmpty()) {
+                if(!result.fileName) break;
                 text += QString("%1: <a href='%2'>%2</a><br/>").arg(result.fileName, result.websiteUrl);
                 // anyBlocked = true;
 
