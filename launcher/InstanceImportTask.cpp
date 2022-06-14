@@ -406,7 +406,7 @@ void InstanceImportTask::processFlame()
                 result.url = QString("https://media.forgecdn.net/files/%1/%2/%3")
                     .arg(QString::number(QString::number(result.fileId).leftRef(4).toInt())
                             ,QString::number(QString::number(result.fileId).rightRef(3).toInt())
-                            ,QUrl::toPercentEncoding(result.fileName));
+                            ,result.fileName);
             }
         }
         if(anyBlocked) {
