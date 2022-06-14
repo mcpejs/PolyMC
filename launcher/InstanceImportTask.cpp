@@ -401,10 +401,12 @@ void InstanceImportTask::processFlame()
             if (!result.resolved || result.url.isEmpty()) {
                 text += QString("%1: <a href='%2'>%2</a><br/>").arg(result.fileName, result.websiteUrl);
                 // anyBlocked = true;
-                file.url = QString("https://media.forgecdn.net/files/%1/%2/%3")
-                    .arg(QString::number(QString::number(file.fileId).leftRef(4).toInt())
-                            ,QString::number(QString::number(file.fileId).rightRef(3).toInt())
-                            ,QUrl::toPercentEncoding(file.fileName));
+
+                // hack here
+                result.url = QString("https://media.forgecdn.net/files/%1/%2/%3")
+                    .arg(QString::number(QString::number(result.fileId).leftRef(4).toInt())
+                            ,QString::number(QString::number(result.fileId).rightRef(3).toInt())
+                            ,QUrl::toPercentEncoding(result.fileName));
             }
         }
         if(anyBlocked) {
