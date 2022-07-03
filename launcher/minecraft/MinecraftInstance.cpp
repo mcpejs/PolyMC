@@ -747,7 +747,9 @@ QMap<QString, QString> MinecraftInstance::createCensorFilterFromSession(AuthSess
     {
         addToFilter(sessionRef.session, tr("<SESSION ID>"));
     }
-    addToFilter(sessionRef.access_token, tr("<ACCESS TOKEN>"));
+    if (sessionRef.access_token != "offline") {
+        addToFilter(sessionRef.access_token, tr("<ACCESS TOKEN>"));
+    }
     if(sessionRef.client_token.size()) {
         addToFilter(sessionRef.client_token, tr("<CLIENT TOKEN>"));
     }
@@ -826,8 +828,16 @@ QString MinecraftInstance::getStatusbarDescription()
         traits.append(tr("broken"));
     }
 
+    QString mcVersion = m_components->getComponentVersion("net.minecraft");
+    if (mcVersion.isEmpty())
+    {
+        // Load component info if needed
+        m_components->reload(Net::Mode::Offline);
+        mcVersion = m_components->getComponentVersion("net.minecraft");
+    }
+
     QString description;
-    description.append(tr("Minecraft %1 (%2)").arg(m_components->getComponentVersion("net.minecraft")).arg(typeName()));
+    description.append(tr("Minecraft %1").arg(mcVersion));
     if(m_settings->get("ShowGameTime").toBool())
     {
         if (lastTimePlayed() > 0) {
