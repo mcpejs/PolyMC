@@ -74,6 +74,12 @@ class Config {
     /// URL for the updater's channel
     QString UPDATER_BASE;
 
+    /// The public key used to sign releases for the Sparkle updater appcast
+    QString MAC_SPARKLE_PUB_KEY;
+
+    /// URL for the Sparkle updater's appcast
+    QString MAC_SPARKLE_APPCAST_URL;
+
     /// User-Agent to use.
     QString USER_AGENT;
 
@@ -118,7 +124,7 @@ class Config {
     /**
      * Client API key for CurseForge
      */
-    QString CURSEFORGE_API_KEY;
+    QString FLAME_API_KEY;
 
     /**
      * Metadata repository URL prefix

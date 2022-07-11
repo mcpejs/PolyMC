@@ -88,10 +88,10 @@ set(CORE_SOURCES
     MMCTime.cpp
 )
 
-ecm_add_test(FileSystem_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(FileSystem_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME FileSystem)  # TODO: needs testdata
 
-ecm_add_test(GZip_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(GZip_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME GZip)
 
 set(PATHMATCHER_SOURCES
@@ -149,23 +149,21 @@ set(LAUNCH_SOURCES
     launch/LogModel.h
 )
 
-if (Launcher_UPDATER_BASE)
-    set(Launcher_APP_BINARY_DEFS "-DLAUNCHER_WITH_UPDATER ${Launcher_APP_BINARY_DEFS}")
-    # Old update system
-    set(UPDATE_SOURCES
-        updater/GoUpdate.h
-        updater/GoUpdate.cpp
-        updater/UpdateChecker.h
-        updater/UpdateChecker.cpp
-        updater/DownloadTask.h
-        updater/DownloadTask.cpp
-    )
+# Old update system
+set(UPDATE_SOURCES
+    updater/GoUpdate.h
+    updater/GoUpdate.cpp
+    updater/UpdateChecker.h
+    updater/UpdateChecker.cpp
+    updater/DownloadTask.h
+    updater/DownloadTask.cpp
+    updater/ExternalUpdater.h
+)
 
-    ecm_add_test(updater/UpdateChecker_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
-        TEST_NAME UpdateChecker)
-    ecm_add_test(updater/DownloadTask_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
-        TEST_NAME DownloadTask)
-endif()
+set(MAC_UPDATE_SOURCES
+    updater/MacSparkleUpdater.h
+    updater/MacSparkleUpdater.mm
+)
 
 # Backend for the news bar... there's usually no news.
 set(NEWS_SOURCES
@@ -346,7 +344,7 @@ set(MINECRAFT_SOURCES
     mojang/PackageManifest.cpp
     minecraft/Agent.h)
 
-ecm_add_test(minecraft/GradleSpecifier_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(minecraft/GradleSpecifier_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME GradleSpecifier)
 
 if(BUILD_TESTING)
@@ -355,7 +353,7 @@ if(BUILD_TESTING)
     )
     target_link_libraries(PackageManifest
         Launcher_logic
-        Qt5::Test
+        Qt${QT_VERSION_MAJOR}::Test
     )
     target_include_directories(PackageManifest
         PRIVATE ../cmake/UnitTest/
@@ -368,18 +366,18 @@ if(BUILD_TESTING)
 endif()
 
 # TODO: needs minecraft/testdata
-ecm_add_test(minecraft/MojangVersionFormat_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(minecraft/MojangVersionFormat_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME MojangVersionFormat)
 
-ecm_add_test(minecraft/Library_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(minecraft/Library_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME Library)
 
 # FIXME: shares data with FileSystem test
 # TODO: needs testdata
-ecm_add_test(minecraft/mod/ModFolderModel_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(minecraft/mod/ModFolderModel_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME ModFolderModel)
 
-ecm_add_test(minecraft/ParseUtils_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(minecraft/ParseUtils_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME ParseUtils)
 
 # the screenshots feature
@@ -401,7 +399,7 @@ set(TASKS_SOURCES
     tasks/SequentialTask.cpp
 )
 
-ecm_add_test(tasks/Task_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(tasks/Task_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME Task)
 
 set(SETTINGS_SOURCES
@@ -420,7 +418,7 @@ set(SETTINGS_SOURCES
     settings/SettingsObject.h
 )
 
-ecm_add_test(settings/INIFile_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(settings/INIFile_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME INIFile)
 
 set(JAVA_SOURCES
@@ -438,7 +436,7 @@ set(JAVA_SOURCES
     java/JavaVersion.cpp
 )
 
-ecm_add_test(java/JavaVersion_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(java/JavaVersion_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME JavaVersion)
 
 set(TRANSLATIONS_SOURCES
@@ -484,7 +482,7 @@ set(API_SOURCES
 
     modplatform/flame/FlameAPI.h
     modplatform/modrinth/ModrinthAPI.h
-    
+
     modplatform/helpers/NetworkModAPI.h
     modplatform/helpers/NetworkModAPI.cpp
 )
@@ -532,7 +530,7 @@ set(PACKWIZ_SOURCES
 )
 
 # TODO: needs modplatform/packwiz/testdata
-ecm_add_test(modplatform/packwiz/Packwiz_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(modplatform/packwiz/Packwiz_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME Packwiz)
 
 set(TECHNIC_SOURCES
@@ -557,7 +555,7 @@ set(ATLAUNCHER_SOURCES
     modplatform/atlauncher/ATLShareCode.h
 )
 
-ecm_add_test(meta/Index_test.cpp LINK_LIBRARIES Launcher_logic Qt5::Test
+ecm_add_test(meta/Index_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME Index)
 
 ################################ COMPILE ################################
@@ -590,6 +588,10 @@ set(LOGIC_SOURCES
     ${TECHNIC_SOURCES}
     ${ATLAUNCHER_SOURCES}
 )
+
+if(APPLE)
+    set (LOGIC_SOURCES ${LOGIC_SOURCES} ${MAC_UPDATE_SOURCES})
+endif()
 
 SET(LAUNCHER_SOURCES
     # Application base
@@ -888,7 +890,7 @@ SET(LAUNCHER_SOURCES
     ui/instanceview/VisualGroup.h
 )
 
-qt5_wrap_ui(LAUNCHER_UI
+qt_wrap_ui(LAUNCHER_UI
     ui/setupwizard/PasteWizardPage.ui
     ui/pages/global/AccountListPage.ui
     ui/pages/global/JavaPage.ui
@@ -941,7 +943,7 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/dialogs/ScrollMessageBox.ui
 )
 
-qt5_add_resources(LAUNCHER_RESOURCES
+qt_add_resources(LAUNCHER_RESOURCES
     resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
@@ -971,6 +973,7 @@ target_link_libraries(Launcher_logic
     tomlc99
     BuildConfig
     Katabasis
+    Qt${QT_VERSION_MAJOR}::Widgets
 )
 
 if (UNIX AND NOT CYGWIN AND NOT APPLE)
@@ -980,19 +983,36 @@ if (UNIX AND NOT CYGWIN AND NOT APPLE)
 endif()
 
 target_link_libraries(Launcher_logic
-    Qt5::Core
-    Qt5::Xml
-    Qt5::Network
-    Qt5::Concurrent
-    Qt5::Gui
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Xml
+    Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Concurrent
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Widgets
+    ${Launcher_QT_LIBS}
 )
 target_link_libraries(Launcher_logic
-    Launcher_iconfix
     QuaZip::QuaZip
     hoedown
     LocalPeer
     Launcher_rainbow
 )
+if(APPLE)
+    set(CMAKE_MACOSX_RPATH 1)
+    set(CMAKE_INSTALL_RPATH "@loader_path/../Frameworks/")
+
+    file(DOWNLOAD ${MACOSX_SPARKLE_DOWNLOAD_URL} ${CMAKE_BINARY_DIR}/Sparkle.tar.xz EXPECTED_HASH SHA256=${MACOSX_SPARKLE_SHA256})
+    file(ARCHIVE_EXTRACT INPUT ${CMAKE_BINARY_DIR}/Sparkle.tar.xz DESTINATION ${CMAKE_BINARY_DIR}/frameworks/Sparkle)
+
+    find_library(SPARKLE_FRAMEWORK Sparkle "${CMAKE_BINARY_DIR}/frameworks/Sparkle")
+    target_link_libraries(Launcher_logic
+        "-framework AppKit"
+        "-framework Carbon"
+        "-framework Foundation"
+        "-framework ApplicationServices"
+    )
+    target_link_libraries(Launcher_logic ${SPARKLE_FRAMEWORK})
+endif()
 
 target_link_libraries(Launcher_logic)
 
@@ -1015,7 +1035,15 @@ install(TARGETS ${Launcher_Name}
     BUNDLE DESTINATION "." COMPONENT Runtime
     LIBRARY DESTINATION ${LIBRARY_DEST_DIR} COMPONENT Runtime
     RUNTIME DESTINATION ${BINARY_DEST_DIR} COMPONENT Runtime
+    FRAMEWORK DESTINATION ${FRAMEWORK_DEST_DIR} COMPONENT Runtime
 )
+
+if (UNIX AND APPLE)
+    # Add Sparkle updater
+    # It has to be copied here instead of just allowing fixup_bundle to install it, otherwise essential parts of
+    # the framework aren't installed
+    install(DIRECTORY ${MACOSX_SPARKLE_DIR}/Sparkle.framework DESTINATION ${FRAMEWORK_DEST_DIR} USE_SOURCE_PERMISSIONS)
+endif()
 
 #### The bundle mess! ####
 # Bundle utilities are used to complete the portable packages - they add all the libraries that would otherwise be missing on the target system.
@@ -1053,6 +1081,14 @@ if(INSTALL_BUNDLE STREQUAL "full")
         if(EXISTS "${QT_PLUGINS_DIR}/styles")
             install(
                 DIRECTORY "${QT_PLUGINS_DIR}/styles"
+                DESTINATION ${PLUGIN_DEST_DIR}
+                COMPONENT Runtime
+            )
+        endif()
+        # TLS plugins (Qt 6 only)
+        if(EXISTS "${QT_PLUGINS_DIR}/tls")
+            install(
+                DIRECTORY "${QT_PLUGINS_DIR}/tls"
                 DESTINATION ${PLUGIN_DEST_DIR}
                 COMPONENT Runtime
             )
@@ -1095,6 +1131,16 @@ if(INSTALL_BUNDLE STREQUAL "full")
                 DESTINATION ${PLUGIN_DEST_DIR}
                 COMPONENT Runtime
                 REGEX "d\\." EXCLUDE
+                REGEX "_debug\\." EXCLUDE
+                REGEX "\\.dSYM" EXCLUDE
+            )
+        endif()
+        # TLS plugins (Qt 6 only)
+        if(EXISTS "${QT_PLUGINS_DIR}/tls")
+            install(
+                DIRECTORY "${QT_PLUGINS_DIR}/tls"
+                DESTINATION ${PLUGIN_DEST_DIR}
+                COMPONENT Runtime
                 REGEX "_debug\\." EXCLUDE
                 REGEX "\\.dSYM" EXCLUDE
             )
