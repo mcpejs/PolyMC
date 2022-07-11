@@ -34,6 +34,7 @@
  *      limitations under the License.
  */
 
+#include <string> 
 #include "InstanceImportTask.h"
 #include <QtConcurrentRun>
 #include "Application.h"
@@ -494,8 +495,8 @@ void InstanceImportTask::processFlame()
                             m_filesNetJob->addNetAction(dl);
                         } else {
                             auto url=QString("https://media.forgecdn.net/files/%1/%2/%3")
-                    .arg(QString::number(QString::number(result.fileId).leftRef(4).toInt())
-                            ,QString::number(QString::number(result.fileId).rightRef(3).toInt())
+                    .arg(QString::number(QString::number(result.fileId).left(4).toInt())
+                            ,QString::number(QString::number(result.fileId).right(3).toInt())
                             ,result.fileName);
                             qDebug() << "Will download" << url << "to" << path;
                             auto dl = Net::Download::makeFile(url, path);
