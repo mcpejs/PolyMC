@@ -92,16 +92,6 @@ void Flame::loadIndexedPackVersions(Flame::IndexedPack& pack, QJsonArray& arr)
         file.version = Json::requireString(version, "displayName");
         file.downloadUrl = Json::ensureString(version, "downloadUrl");
 
-        // test
-        // here only changes
-        if(file.downloadUrl.isEmpty()){
-            //FIXME : HACK, MAY NOT WORK FOR LONG
-            file.downloadUrl = QString("https://media.forgecdn.net/files/%1/%2/%3")
-                    .arg(QString::number(QString::number(file.fileId).leftRef(4).toInt())
-                            ,QString::number(QString::number(file.fileId).rightRef(3).toInt())
-                            ,QUrl::toPercentEncoding(file.fileName));
-        }
-
         // only add if we have a download URL (third party distribution is enabled)
         if (!file.downloadUrl.isEmpty()) {
             unsortedVersions.append(file);
