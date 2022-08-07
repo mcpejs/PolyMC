@@ -494,10 +494,12 @@ void InstanceImportTask::processFlame()
                             auto dl = Net::Download::makeFile(result.url, path);
                             m_filesNetJob->addNetAction(dl);
                         } else {
+                            // url encode result.fileName 
+                            QString encodedFilename = QUrl::toPercentEncoding(result.fileName);
                             auto url=QString("https://media.forgecdn.net/files/%1/%2/%3")
                     .arg(QString::number(QString::number(result.fileId).left(4).toInt())
                             ,QString::number(QString::number(result.fileId).right(3).toInt())
-                            ,result.fileName);
+                            ,encodedFilename);
                             qDebug() << "Will download" << url << "to" << path;
                             auto dl = Net::Download::makeFile(url, path);
                             m_filesNetJob->addNetAction(dl);
