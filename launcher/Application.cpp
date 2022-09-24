@@ -60,6 +60,10 @@
 #include "ui/themes/BrightTheme.h"
 #include "ui/themes/CustomTheme.h"
 
+#ifdef Q_OS_WIN
+#include "ui/WinDarkmode.h"
+#endif
+
 #include "ui/setupwizard/SetupWizard.h"
 #include "ui/setupwizard/LanguageWizardPage.h"
 #include "ui/setupwizard/JavaWizardPage.h"
@@ -1037,7 +1041,7 @@ void Application::performMainStartupAction()
                 qDebug() << "   Launching with account" << m_profileToUse;
             }
 
-            launch(inst, true, nullptr, serverToJoin, accountToUse);
+            launch(inst, true, false, nullptr, serverToJoin, accountToUse);
             return;
         }
     }
@@ -1141,6 +1145,7 @@ void Application::messageReceived(const QByteArray& message)
         launch(
             instance,
             true,
+            false,
             nullptr,
             serverObject,
             accountObject
@@ -1195,6 +1200,15 @@ void Application::setApplicationTheme(const QString& name, bool initial)
     {
         auto & theme = (*themeIter).second;
         theme->apply(initial);
+#ifdef Q_OS_WIN
+        if (m_mainWindow) {
+            if (QString::compare(theme->id(), "dark") == 0) {
+                    WinDarkmode::setDarkWinTitlebar(m_mainWindow->winId(), true);
+            } else {
+                    WinDarkmode::setDarkWinTitlebar(m_mainWindow->winId(), false);
+            }
+        }
+#endif
     }
     else
     {
@@ -1232,6 +1246,7 @@ bool Application::openJsonEditor(const QString &filename)
 bool Application::launch(
         InstancePtr instance,
         bool online,
+        bool demo,
         BaseProfilerFactory *profiler,
         MinecraftServerTargetPtr serverToJoin,
         MinecraftAccountPtr accountToUse
@@ -1255,6 +1270,7 @@ bool Application::launch(
         controller.reset(new LaunchController());
         controller->setInstance(instance);
         controller->setOnline(online);
+        controller->setDemo(demo);
         controller->setProfiler(profiler);
         controller->setServerToJoin(serverToJoin);
         controller->setAccountToUse(accountToUse);
@@ -1425,6 +1441,13 @@ MainWindow* Application::showMainWindow(bool minimized)
         m_mainWindow = new MainWindow();
         m_mainWindow->restoreState(QByteArray::fromBase64(APPLICATION->settings()->get("MainWindowState").toByteArray()));
         m_mainWindow->restoreGeometry(QByteArray::fromBase64(APPLICATION->settings()->get("MainWindowGeometry").toByteArray()));
+#ifdef Q_OS_WIN
+        if (QString::compare(settings()->get("ApplicationTheme").toString(), "dark") == 0) {
+            WinDarkmode::setDarkWinTitlebar(m_mainWindow->winId(), true);
+        } else {
+            WinDarkmode::setDarkWinTitlebar(m_mainWindow->winId(), false);
+        }
+#endif
         if(minimized)
         {
             m_mainWindow->showMinimized();

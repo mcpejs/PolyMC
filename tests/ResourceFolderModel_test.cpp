@@ -37,10 +37,10 @@
 #include <QTemporaryDir>
 #include <QTimer>
 
-#include "FileSystem.h"
+#include <FileSystem.h>
 
-#include "minecraft/mod/ModFolderModel.h"
-#include "minecraft/mod/ResourceFolderModel.h"
+#include <minecraft/mod/ModFolderModel.h>
+#include <minecraft/mod/ResourceFolderModel.h>
 
 #define EXEC_UPDATE_TASK(EXEC, VERIFY)                                                  \
     QEventLoop loop;                                                                    \
@@ -70,7 +70,7 @@ slots:
     void test_1178()
     {
         // source
-        QString source = QFINDTESTDATA("testdata/test_folder");
+        QString source = QFINDTESTDATA("testdata/ResourceFolderModel/test_folder");
 
         // sanity check
         QVERIFY(!source.endsWith('/'));
@@ -135,7 +135,7 @@ slots:
 
     void test_addFromWatch()
     {
-        QString source = QFINDTESTDATA("testdata");
+        QString source = QFINDTESTDATA("testdata/ResourceFolderModel");
 
         ModFolderModel model(source);
 
@@ -146,7 +146,6 @@ slots:
         for (auto mod : model.allMods())
             qDebug() << mod->name();
 
-        // FIXME: It considers every file in the directory as a mod, but we should probably filter that out somehow.
         QCOMPARE(model.size(), 4);
 
         model.stopWatching();
@@ -154,8 +153,8 @@ slots:
 
     void test_removeResource()
     {
-        QString folder_resource = QFINDTESTDATA("testdata/test_folder");
-        QString file_mod = QFINDTESTDATA("testdata/supercoolmod.jar");
+        QString folder_resource = QFINDTESTDATA("testdata/ResourceFolderModel/test_folder");
+        QString file_mod = QFINDTESTDATA("testdata/ResourceFolderModel/supercoolmod.jar");
 
         QTemporaryDir tmp;
 
@@ -206,8 +205,8 @@ slots:
 
     void test_enable_disable()
     {
-        QString folder_resource = QFINDTESTDATA("testdata/test_folder");
-        QString file_mod = QFINDTESTDATA("testdata/supercoolmod.jar");
+        QString folder_resource = QFINDTESTDATA("testdata/ResourceFolderModel/test_folder");
+        QString file_mod = QFINDTESTDATA("testdata/ResourceFolderModel/supercoolmod.jar");
 
         QTemporaryDir tmp;
         ResourceFolderModel model(tmp.path());
