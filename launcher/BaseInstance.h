@@ -54,6 +54,7 @@
 #include "net/Mode.h"
 
 #include "minecraft/launch/MinecraftServerTarget.h"
+#include "RuntimeContext.h"
 
 class QDir;
 class Task;
@@ -140,13 +141,14 @@ public:
     QString getPostExitCommand();
     QString getWrapperCommand();
 
-    bool isManagedPack();
-    QString getManagedPackType();
-    QString getManagedPackID();
-    QString getManagedPackName();
-    QString getManagedPackVersionID();
-    QString getManagedPackVersionName();
+    bool isManagedPack() const;
+    QString getManagedPackType() const;
+    QString getManagedPackID() const;
+    QString getManagedPackName() const;
+    QString getManagedPackVersionID() const;
+    QString getManagedPackVersionName() const;
     void setManagedPack(const QString& type, const QString& id, const QString& name, const QString& versionId, const QString& version);
+    void copyManagedPack(BaseInstance& other);
 
     /// guess log level from a line of game log
     virtual MessageLevel::Enum guessLevel(const QString &line, MessageLevel::Enum level)
@@ -218,6 +220,12 @@ public:
     virtual QMap<QString, QString> getVariables() = 0;
 
     virtual QString typeName() const = 0;
+
+    void updateRuntimeContext();
+    RuntimeContext runtimeContext() const
+    {
+        return m_runtimeContext;
+    }
 
     bool hasVersionBroken() const
     {
@@ -304,6 +312,7 @@ protected: /* data */
     bool m_isRunning = false;
     shared_qobject_ptr<LaunchTask> m_launchProcess;
     QDateTime m_timeStarted;
+    RuntimeContext m_runtimeContext;
 
 private: /* data */
     Status m_status = Status::Present;

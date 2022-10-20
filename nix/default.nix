@@ -5,6 +5,7 @@
 , ninja
 , jdk8
 , jdk
+, ghc_filesystem
 , zlib
 , file
 , wrapQtAppsHook
@@ -21,6 +22,7 @@
 , self
 , version
 , libnbtplusplus
+, tomlplusplus
 , enableLTO ? false
 }:
 
@@ -48,7 +50,7 @@ stdenv.mkDerivation rec {
 
   src = lib.cleanSource self;
 
-  nativeBuildInputs = [ cmake extra-cmake-modules ninja jdk file wrapQtAppsHook ];
+  nativeBuildInputs = [ cmake extra-cmake-modules ninja jdk ghc_filesystem file wrapQtAppsHook ];
   buildInputs = [ qtbase quazip zlib ];
 
   dontWrapQtApps = true;
@@ -59,6 +61,11 @@ stdenv.mkDerivation rec {
     mkdir source/libraries/libnbtplusplus
     cp -a ${libnbtplusplus}/* source/libraries/libnbtplusplus
     chmod a+r+w source/libraries/libnbtplusplus/*
+    # Copy tomlplusplus
+    rm -rf source/libraries/tomlplusplus
+    mkdir source/libraries/tomlplusplus
+    cp -a ${tomlplusplus}/* source/libraries/tomlplusplus
+    chmod a+r+w source/libraries/tomlplusplus/*
   '';
 
   cmakeFlags = [

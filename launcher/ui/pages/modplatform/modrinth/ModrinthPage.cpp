@@ -43,6 +43,8 @@
 #include "InstanceImportTask.h"
 #include "Json.h"
 
+#include "ui/widgets/ProjectItem.h"
+
 #include <HoeDown.h>
 
 #include <QComboBox>
@@ -70,6 +72,8 @@ ModrinthPage::ModrinthPage(NewInstanceDialog* dialog, QWidget* parent) : QWidget
     connect(ui->sortByBox, SIGNAL(currentIndexChanged(int)), this, SLOT(triggerSearch()));
     connect(ui->packView->selectionModel(), &QItemSelectionModel::currentChanged, this, &ModrinthPage::onSelectionChanged);
     connect(ui->versionSelectionBox, &QComboBox::currentTextChanged, this, &ModrinthPage::onVersionSelectionChanged);
+
+    ui->packView->setItemDelegate(new ProjectItemDelegate(this));
 }
 
 ModrinthPage::~ModrinthPage()
@@ -294,7 +298,7 @@ void ModrinthPage::suggestCurrent()
 
     for (auto& ver : current.versions) {
         if (ver.id == selectedVersion) {
-            dialog->setSuggestedPack(current.name + " " + ver.version, new InstanceImportTask(ver.download_url, this));
+            dialog->setSuggestedPack(current.name, ver.version, new InstanceImportTask(ver.download_url, this));
             auto iconName = current.iconName;
             m_model->getLogo(iconName, current.iconUrl.toString(),
                              [this, iconName](QString logo) { dialog->setSuggestedIconFromFile(logo, iconName); });

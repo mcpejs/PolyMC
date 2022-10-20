@@ -33,9 +33,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
 include(GenerateExportHeader)
 set(CMAKE_CXX_FLAGS "-Wall -pedantic -fstack-protector-strong --param=ssp-buffer-size=4 ${CMAKE_CXX_FLAGS}")
-if(UNIX AND APPLE)
-    set(CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
-endif()
 
 # Fix build with Qt 5.13
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_NO_DEPRECATED_WARNINGS=Y")
@@ -126,7 +123,7 @@ set(Launcher_QT_VERSION_MAJOR "5" CACHE STRING "Major Qt version to build agains
 
 # By using this key in your builds you accept the terms of use laid down in
 # https://docs.microsoft.com/en-us/legal/microsoft-identity-platform/terms-of-use
-set(Launcher_MSA_CLIENT_ID "549033b2-1532-4d4e-ae77-1bbaa46f9d74" CACHE STRING "Client ID you can get from Microsoft Identity Platform when you register an application")
+set(Launcher_MSA_CLIENT_ID "6b329578-bfec-42a3-b503-303ab3f2ac96" CACHE STRING "Client ID you can get from Microsoft Identity Platform when you register an application")
 
 # By using this key in your builds you accept the terms and conditions laid down in
 # https://support.curseforge.com/en/support/solutions/articles/9000207405-curse-forge-3rd-party-api-terms-and-conditions
@@ -190,6 +187,14 @@ set(QT_MKSPECS_DIR ${QT_DATA_DIR}/mkspecs)
 # NOTE: Qt 6 already sets this by default
 if (Qt5_POSITION_INDEPENDENT_CODE)
     SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+
+if(NOT Launcher_FORCE_BUNDLED_LIBS)
+    # Find toml++
+    find_package(tomlplusplus 3.2.0 QUIET)
+
+    # Find ghc_filesystem
+    find_package(ghc_filesystem QUIET)
 endif()
 
 ####################################### Program Info #######################################
@@ -300,7 +305,6 @@ add_subdirectory(libraries/systeminfo) # system information library
 add_subdirectory(libraries/hoedown) # markdown parser
 add_subdirectory(libraries/launcher) # java based launcher part for Minecraft
 add_subdirectory(libraries/javacheck) # java compatibility checker
-add_subdirectory(libraries/xz-embedded) # xz compression
 if (FORCE_BUNDLED_QUAZIP)
     message(STATUS "Using bundled QuaZip")
     set(BUILD_SHARED_LIBS 0)  # link statically to avoid conflicts.
@@ -311,11 +315,23 @@ else()
 endif()
 add_subdirectory(libraries/rainbow) # Qt extension for colors
 add_subdirectory(libraries/LocalPeer) # fork of a library from Qt solutions
-add_subdirectory(libraries/classparser) # class parser library
-add_subdirectory(libraries/tomlc99) # toml parser
+if(NOT tomlplusplus_FOUND)
+    message(STATUS "Using bundled tomlplusplus")
+    add_subdirectory(libraries/tomlplusplus) # toml parser
+else()
+    message(STATUS "Using system tomlplusplus")
+endif()
 add_subdirectory(libraries/katabasis) # An OAuth2 library that tried to do too much
 add_subdirectory(libraries/gamemode)
 add_subdirectory(libraries/murmur2) # Hash for usage with the CurseForge API
+if (NOT ghc_filesystem_FOUND)
+    message(STATUS "Using bundled ghc_filesystem")
+    set(GHC_FILESYSTEM_WITH_INSTALL OFF) # Workaround ghc::filesystem bug
+    add_subdirectory(libraries/filesystem) # Implementation of std::filesystem for old C++, for usage in old macOS
+    add_library(ghcFilesystem::ghc_filesystem ALIAS ghc_filesystem)
+else()
+    message(STATUS "Using system ghc_filesystem")
+endif()
 
 ############################### Built Artifacts ###############################
 

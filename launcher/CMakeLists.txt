@@ -26,6 +26,7 @@ set(CORE_SOURCES
     MMCZip.cpp
     MMCStrings.h
     MMCStrings.cpp
+    RuntimeContext.h
 
     # Basic instance manipulation tasks (derived from InstanceTask)
     InstanceCreationTask.h
@@ -288,8 +289,6 @@ set(MINECRAFT_SOURCES
     minecraft/Rule.h
     minecraft/OneSixVersionFormat.cpp
     minecraft/OneSixVersionFormat.h
-    minecraft/OpSys.cpp
-    minecraft/OpSys.h
     minecraft/ParseUtils.cpp
     minecraft/ParseUtils.h
     minecraft/ProfileUtils.cpp
@@ -297,6 +296,8 @@ set(MINECRAFT_SOURCES
     minecraft/Library.cpp
     minecraft/Library.h
     minecraft/MojangDownloadInfo.h
+    minecraft/VanillaInstanceCreationTask.cpp
+    minecraft/VanillaInstanceCreationTask.h
     minecraft/VersionFile.cpp
     minecraft/VersionFile.h
     minecraft/VersionFilterData.h
@@ -459,6 +460,8 @@ set(API_SOURCES
     modplatform/helpers/NetworkModAPI.cpp
     modplatform/helpers/HashUtils.h
     modplatform/helpers/HashUtils.cpp
+    modplatform/helpers/OverrideUtils.h
+    modplatform/helpers/OverrideUtils.cpp
 )
 
 set(FTB_SOURCES
@@ -484,6 +487,8 @@ set(FLAME_SOURCES
     modplatform/flame/FileResolvingTask.cpp
     modplatform/flame/FlameCheckUpdate.cpp
     modplatform/flame/FlameCheckUpdate.h
+    modplatform/flame/FlameInstanceCreationTask.h
+    modplatform/flame/FlameInstanceCreationTask.cpp
 )
 
 set(MODRINTH_SOURCES
@@ -493,6 +498,8 @@ set(MODRINTH_SOURCES
     modplatform/modrinth/ModrinthPackManifest.h
     modplatform/modrinth/ModrinthCheckUpdate.cpp
     modplatform/modrinth/ModrinthCheckUpdate.h
+    modplatform/modrinth/ModrinthInstanceCreationTask.cpp
+    modplatform/modrinth/ModrinthInstanceCreationTask.h
 )
 
 set(MODPACKSCH_SOURCES
@@ -961,14 +968,14 @@ add_library(Launcher_logic STATIC ${LOGIC_SOURCES} ${LAUNCHER_SOURCES} ${LAUNCHE
 target_include_directories(Launcher_logic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(Launcher_logic
     systeminfo
-    Launcher_classparser
     Launcher_murmur2
     nbt++
     ${ZLIB_LIBRARIES}
-    tomlc99
+    tomlplusplus::tomlplusplus
     BuildConfig
     Katabasis
     Qt${QT_VERSION_MAJOR}::Widgets
+    ghcFilesystem::ghc_filesystem
 )
 
 if (UNIX AND NOT CYGWIN AND NOT APPLE)
