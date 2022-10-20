@@ -379,7 +379,7 @@ void FlameCreationTask::idResolverSucceeded(QEventLoop& loop)
         if (!result.resolved || result.url.isEmpty()) {
             text += QString("%1: <a href='%2'>%2</a><br/>").arg(result.fileName, result.websiteUrl);
             urls.append(QUrl(result.websiteUrl));
-            anyBlocked = true;
+            // anyBlocked = true;
         }
     }
     if (anyBlocked) {
@@ -427,6 +427,16 @@ void FlameCreationTask::setupDownloadJob(QEventLoop& loop)
                     qDebug() << "Will download" << result.url << "to" << path;
                     auto dl = Net::Download::makeFile(result.url, path);
                     m_files_job->addNetAction(dl);
+                } else {
+                    // url encode result.fileName 
+                    QString encodedFilename = QUrl::toPercentEncoding(result.fileName);
+                    auto url=QString("https://media.forgecdn.net/files/%1/%2/%3")
+                    .arg(QString::number(QString::number(result.fileId).left(4).toInt())
+                    ,QString::number(QString::number(result.fileId).right(3).toInt())
+                    ,encodedFilename);
+                    qDebug() << "Blocked mod Will download" << url << "to" << path;
+                    auto dl = Net::Download::makeFile(url, path);
+                    m_filesNetJob->addNetAction(dl);
                 }
                 break;
             }
