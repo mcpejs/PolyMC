@@ -436,7 +436,7 @@ void FlameCreationTask::setupDownloadJob(QEventLoop& loop)
                     ,encodedFilename);
                     qDebug() << "Blocked mod Will download" << url << "to" << path;
                     auto dl = Net::Download::makeFile(url, path);
-                    m_files_Job->addNetAction(dl);
+                    m_files_job->addNetAction(dl);
                 }
                 break;
             }
